@@ -3,6 +3,7 @@ import numpy as np
 import requests
 import io
 from PIL import Image
+from datetime import datetime
 
 iris_url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
 
@@ -107,13 +108,93 @@ def img_array_conversion():
     Image.Image.show(im)
 
 
+def del_nan():
+    a = np.array([1, 2, 3, np.nan, 5, 6, 7, np.nan])
+    print(a)
+    out = a[~np.isnan(a)]
+    print(out)
+
+
+def euclidean_distance():
+    a = np.array([1, 2, 3, 4, 5])
+    b = np.array([4, 5, 6, 7, 8])
+    eucdist = np.linalg.norm(a - b)
+    print("eucdist:", eucdist)
+
+
+def peak_valley():
+    """
+    寻找序列中的峰/谷值
+    ---
+    峰: [... -2 ...]
+    谷: [... 2 ...]
+    """
+    # peak
+    a = np.array([1, 3, 7, 1, 2, 6, 0, 1])
+    doublediff = np.diff(np.sign(np.diff(a)))
+    peak_locations = np.where(doublediff == -2)[0] + 1
+    print(peak_locations)
+    # valley
+    np.random.seed(100)
+    b = np.random.randint(20, size=20)
+    print(b)
+    valley_loc = np.where(np.diff(np.sign(np.diff(b))) == 2)[0] + 1
+    print(valley_loc)
+
+
+def fill_absent_dates():
+    dates = np.arange(np.datetime64('2018-02-01'), np.datetime64('2018-02-25'), 2)
+    print(dates)
+    out = np.array([np.arange(date, date + d) for date, d in zip(dates, np.diff(dates))]).reshape(-1)
+    # out = []
+    # for date, d in zip(dates, np.diff(dates)):
+    #     out.extend(np.arange(date, date + d))
+
+    print(np.array(out))
+
+
+def simple_ma():
+    """
+    simple moving average
+    """
+    np.random.seed(100)
+    arr = np.random.randint(10, size=10)
+    window_size = 3
+    print(arr)
+    out = [(np.sum(arr[i:i + window_size]) / window_size).round(2) for i in
+           np.arange(0, (arr.size - window_size) + 1, 1)]
+    print(out)
+    # convolution卷积
+    out2 = np.convolve(arr, np.ones(3) / 3, mode='valid')
+    print(out2)
+
+
+def dt64_2_dt():
+    dt64 = np.datetime64('2018-02-25 22:10:10')
+    dt = dt64.astype(datetime)
+    print(dt)
+
+
+def nth_rep():
+    x = np.array([1, 2, 1, 1, 3, 4, 3, 1, 1, 2, 1, 1, 2])
+    num = 1
+    nth = 5
+    print(np.where(x == num)[0][nth-1])
+
+
 if __name__ == '__main__':
-    # one_hot_encoding()
-    # index_by_group()
-    # id_by_group()
-    # rank_index()
-    # get_max()
-    # apply_along_axis()
-    # uniq_positions()
-    # mean_by_group()
+    one_hot_encoding()
+    index_by_group()
+    id_by_group()
+    rank_index()
+    get_max()
+    apply_along_axis()
+    uniq_positions()
+    mean_by_group()
     img_array_conversion()
+    euclidean_distance()
+    peak_valley()
+    fill_absent_dates()
+    simple_ma()
+    dt64_2_dt()
+    nth_rep()
